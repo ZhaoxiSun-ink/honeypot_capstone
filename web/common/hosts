@@ -1,0 +1,4 @@
+127.0.0.1 localhost
+172.17.0.2 kdc.example.com kdc
+172.17.0.3 ssh.example.com ssh
+172.17.0.4 client.example.com client

@@ -1,0 +1,19 @@
+dn: uid=jdoe,ou=users,dc=example,dc=com
+uid: jdoe
+cn: John Doe
+sn: Doe
+givenName: John
+mail: jdoe@example.com
+objectClass: top
+objectClass: posixAccount
+objectClass: shadowAccount
+objectClass: inetOrgPerson
+uidNumber: 10000
+gidNumber: 10000
+homeDirectory: /home/jdoe
+loginShell: /bin/bash
+gecos: John Doe
+userPassword: {SHA}UDSZw8GXKTISELsyNZUQRp8QeUc=
+shadowLastChange: 0
+shadowMax: -1
+shadowWarning: 7

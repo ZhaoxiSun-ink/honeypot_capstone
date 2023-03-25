@@ -1,0 +1,23 @@
+ipvar HOME_NET [172.17.0.0/16]
+alert icmp any any -> 8.8.8.8 any (msg:"Pinging...";sid:1000004;)
+# alert tcp any any -> any 6667 (msg:"IRC protocol traffic";sid:1000005;)
+alert tcp any 6667 -> any any (msg:"C&C Server sent netinfo command";content:"!netinfo";sid:1000006;)
+alert tcp any 6667 -> any any (msg:"C&C Server sent sysinfo command";content:"!sysinfo";sid:1000007;)
+alert tcp any 6667 -> any any (msg:"C&C Server sent port scan command";content:"!scan";sid:1000008;)
+alert tcp any 6667 -> any any (msg:"C&C Server sent download command";content:"!download";sid:1000009;)
+alert tcp any any -> $HOME_NET any (msg:"Port Scan detected"; flags:S,12; sid:10000012; rev:1;) 
+#detect port scanning
+alert tcp any any -> $HOME_NET 22 (msg:"SSH brute-force attack detected"; flow:to_server,established; content:"Failed password for"; nocase; content:"ssh2"; nocase; sid:10000013; rev:1;)
+#detect brute-force SSH attacks
+alert tcp any any -> $HOME_NET 1433 (msg:"SQL Injection detected"; flow:to_server,established; content:"' or"; nocase; content:"'="; nocase; sid:10000011; rev:1;)
+#sql injection
+alert tcp any any -> $HOME_NET 80 (msg:"File Inclusion attack detected"; flow:to_server,established; content:"../../"; nocase; content:".php"; nocase; sid:10000014; rev:1;)
+#file inclusion attacks
+alert tcp any any -> $HOME_NET any (msg:"Suspicious file creation/modification"; flow:to_server,established; content:"touch"; nocase; content:".sh"; nocase; sid:10000015; rev:1;)
+#detect suspicious user activity
+alert tcp any any -> $HOME_NET any (msg:"Lateral movement detected"; flow:to_server, established; content:"net use"; nocase; sid:10000016; rev:1;)
+#detect lateral movement
+alert tcp any any -> any 21 (msg:"Network Scanning Detected"; flow: to_server,established; flags:S; sid:10000017; rev:1;)
+#detect network scanning
+alert tcp any any -> $HOME_NET 1194 (msg:"Incoming VPN Connection Detected"; flow:to_server, established; sid:10000018; rev:1;)
+#detect VPN connection

@@ -1,0 +1,77 @@
+version: "3.9"
+
+services:
+  vpn:
+    build: ./vpn
+    container_name: vpn
+    volumes:
+      - ./rsyslog.conf:/etc/rsyslog.conf
+    ports:
+      - "1194:1194/udp"
+    cap_add:
+      - NET_ADMIN
+    entrypoint: /start_vpn.sh
+    container_name: vpn
+    hostname: vpn
+    #environment:
+    #  - OVPN_DATA=ovpn-data-example
+    networks:
+      honeypot_network:
+        ipv4_address: 172.30.0.2
+  ldap:
+    build: ./ldap
+    container_name: ldap
+    container_name: ldap
+    hostname: ldap
+    volumes:
+      - ./rsyslog.conf:/etc/rsyslog.conf
+    networks:
+      honeypot_network:
+        ipv4_address: 172.30.0.3
+  rsyslog:
+    build: ./rsyslog
+    container_name: rsyslog
+    container_name: rsyslog
+    hostname: rsyslog
+    networks:
+      honeypot_network:
+        ipv4_address: 172.30.0.4
+  web:
+    build: ./web
+    container_name: web
+    container_name: web
+    hostname: web
+    volumes:
+      - ./rsyslog.conf:/etc/rsyslog.conf
+    entrypoint: /start_web.sh
+    networks:
+      honeypot_network:
+        ipv4_address: 172.30.0.5
+  ssh:
+    build: ./ssh
+    container_name: ssh
+    hostname: ssh
+    entrypoint: /start_ssh.sh
+    volumes:
+      - ./rsyslog.conf:/etc/rsyslog.conf
+    networks:
+      honeypot_network:
+        ipv4_address: 172.30.0.6
+  snort:
+    build: ./snort
+    network_mode: "host"
+    container_name: snort
+    hostname: snort
+    entrypoint: /start_snort.sh
+    volumes:
+      - ./rsyslog.conf:/etc/rsyslog.conf
+
+networks:
+  honeypot_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24
+          gateway: 172.30.0.1
+    #driver_opts:
+    #  com.docker.network.bridge.name: honeypot_interface
